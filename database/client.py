@@ -48,5 +48,14 @@ class DatabaseClient:
         except Exception as e:
             traceback.print_exc()
             print(f'Deleting database: {e}')
+    
+    def list_collections(self, database_name: str):
+        try:
+            self.client.use_database(database_name)
+            collections = self.client.list_collections()
+            print(f'Collections in the database: {collections}')
+        except Exception as e:
+            traceback.print_exc()
+            print(f'Error listing collection: {e}')
 
 DatabaseClient()
