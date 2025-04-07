@@ -1,5 +1,9 @@
 fastapi==0.115.12
 langchain==0.3.23
-milvus==2.3.9
+milvus==2.3.5
 pymilvus==2.5.6
 uvicorn==0.34.0
+langchain-community
+python-multipart
+unstructured
+python-pptx
