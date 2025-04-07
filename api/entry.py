@@ -2,12 +2,12 @@ import uvicorn
 import tempfile
 import os
 from loaders import load_ppt
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 
 app = FastAPI()
 
 @app.post("/upload")
-async def upload_session_material(file: UploadFile = File(...)):
+async def upload_session_material_detail(material_code: str = Form(...), file: UploadFile = File(...)):
     if not file.filename.endswith(".pptx"):
         raise HTTPException(status_code=400, detail="Only .pptx files are supported")
 
@@ -17,7 +17,7 @@ async def upload_session_material(file: UploadFile = File(...)):
             temp_file.write(await file.read())
             temp_file_path = temp_file.name  # Store path before closing
 
-        load_ppt(temp_file_path)
+        load_ppt(temp_file_path, material_code)
 
         return {"message": "Success reading file"}
 
