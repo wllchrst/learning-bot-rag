@@ -1,0 +1,36 @@
+import os
+from dotenv import load_dotenv
+from app_decorator import singleton
+
+ENVS = ["session_data_col_name", "database_name"]
+
+@singleton
+class EnvHelper:
+    """Class for gathering and saving all env for the application """
+    def __init__(self):
+        load_dotenv()
+        self.envs = {}
+
+        self.gather_envs()
+        self.assign_env()
+
+    def gather_envs(self) -> bool:
+        """Gather All env for the application if there is a missing value throws error
+
+        Returns:
+            bool: _description_
+        """
+        for env in ENVS:
+            env_value = os.getenv(env)
+            if env_value is None:
+                raise ValueError(f'{env} has value None')
+
+            self.envs[env] = os.getenv(env)
+
+        return True
+    
+    def assign_env(self):
+        self.SESSION_DATA_COLLECTION = self.envs[ENVS[0]]
+        self.DATABASE_NAME = self.envs[ENVS[1]]
+
+EnvHelper()
