@@ -1,3 +1,2 @@
 from database.client import DatabaseClient
 from database.server import DatabaseServer
-from database.collections_script.create_script import create_collections
