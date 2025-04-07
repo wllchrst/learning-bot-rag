@@ -1,7 +1,8 @@
 import traceback
 from pymilvus import MilvusClient, utility, connections
 from pymilvus.exceptions import MilvusException
-
+from app_decorator import singleton
+@singleton
 class DatabaseClient:
     def __init__(self, uri='http://localhost:19530'):
         self.uri = uri
@@ -47,3 +48,5 @@ class DatabaseClient:
         except Exception as e:
             traceback.print_exc()
             print(f'Deleting database: {e}')
+
+DatabaseClient()
