@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from app_decorator import singleton
 
-ENVS = ["session_data_col_name", "database_name"]
+ENVS = ["SESSION_DATA_COLUMN", "DATABASE_NAME"]
 
 @singleton
 class EnvHelper:

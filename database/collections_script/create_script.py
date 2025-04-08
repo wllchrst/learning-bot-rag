@@ -7,5 +7,7 @@ def create_collections():
     envhelper = EnvHelper()
     database_client = DatabaseClient()
 
-    database_client.list_collections(envhelper.DATABASE_NAME)
     SessionDetailCollection(client=database_client.client)
+
+    database_client.list_database()
+    database_client.list_collections(database_name=envhelper.DATABASE_NAME)
