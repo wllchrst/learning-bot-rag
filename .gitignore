@@ -2,3 +2,5 @@ milvus_data
 **/__pycache__/**
 volumes
 .DS_Store
+.vscode
+.env
