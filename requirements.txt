@@ -7,3 +7,4 @@ langchain-community
 python-multipart
 unstructured
 python-pptx
+langchain_huggingface 
