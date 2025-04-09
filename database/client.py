@@ -2,7 +2,6 @@ import traceback
 from pymilvus import MilvusClient, utility, connections
 from pymilvus.exceptions import MilvusException
 from app_decorator import singleton
-from database.collections_script.create_script import create_collections
 @singleton
 class DatabaseClient:
     def __init__(self, uri='http://localhost:19530'):
@@ -19,15 +18,20 @@ class DatabaseClient:
             traceback.print_exc()
             print(f'Connecting to database server error: {e}')
             
-    def insert_entity(self, collection_name: str, data: dict):
+    def insert_entity(self, database_name: str, collection_name: str, data: list[dict]):
         try:
+            self.client.use_database(database_name)
+
             self.client.insert(
                 collection_name=collection_name,
                 data=data
             )
         except Exception as e:
             traceback.print_exc()
-            print(f'Connecting to database server error: {e}')
+            print(f'Insert entity error: {e}')
+        finally:
+            print("Inserting entity successful")
+            return True
 
     def create_database(self, database_name: str):
         try:
