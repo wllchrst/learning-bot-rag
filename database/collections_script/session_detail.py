@@ -1,12 +1,12 @@
 from pymilvus import MilvusClient, DataType
 from database.collections_script.template import CollectionCreateTemplate
 from helpers import EnvHelper
-class SessionDetailCollection(CollectionCreateTemplate):
+class SessionPPTCollection(CollectionCreateTemplate):
     def __init__(self, client: MilvusClient):
         envhelper = EnvHelper()
         super().__init__(
             client=client,
-            collection_name=envhelper.SESSION_DATA_COLLECTION,
+            collection_name=envhelper.SESSION_PPT_COLLECTION,
             database_name=envhelper.DATABASE_NAME
         )
 
@@ -17,28 +17,35 @@ class SessionDetailCollection(CollectionCreateTemplate):
         )
 
         self.schema.add_field(
-            field_name="detail_id",
-            datatype=DataType.INT64,
-            is_primary=True
+            field_name="id",
+            datatype=DataType.VARCHAR,
+            is_primary=True,
+            max_length=36
         )
 
         self.schema.add_field(
             field_name="vector",
             datatype=DataType.FLOAT_VECTOR,
-            dim=5
+            dim=768
         )
 
         self.schema.add_field(
-            field_name="detail_text",
+            field_name="text",
             datatype=DataType.VARCHAR,
             max_length=10000
+        )
+        
+        self.schema.add_field(
+            field_name="material_code",
+            datatype=DataType.VARCHAR,
+            max_length=20
         )
 
     def create_indexes(self):
         self.index_params = self.client.prepare_index_params()
 
         self.index_params.add_index(
-            field_name="detail_id",
+            field_name="id",
             index_type="AUTOINDEX"
         )
 
