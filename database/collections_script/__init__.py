@@ -1,2 +1,2 @@
-from database.collections_script.session_detail import SessionDetailCollection
+from database.collections_script.session_detail import SessionPPTCollection
 from database.collections_script.create_script import create_collections
