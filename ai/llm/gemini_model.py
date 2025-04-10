@@ -1,4 +1,4 @@
-from llm import ChatModel
+from ai.llm import ChatModel
 from google import genai
 from google.genai import types
 from helpers import EnvHelper
@@ -8,13 +8,14 @@ class GeminiModel(ChatModel):
         self.API_KEY = EnvHelper().GEMINI_API_KEY
         self.client = genai.Client(api_key=self.API_KEY)
 
-    def answer(self, initial_input: str):
+    def answer(self, prompt: str):
+        print(f'prompt: {prompt}')
         model = "gemini-2.0-flash-lite"
         contents = [
             types.Content(
                 role="user",
                 parts=[
-                    types.Part.from_text(text=initial_input),
+                    types.Part.from_text(text=prompt),
                 ],
             ),
         ]
@@ -24,12 +25,17 @@ class GeminiModel(ChatModel):
             response_mime_type="text/plain",
         )
 
+        result = ""
+
         for chunk in self.client.models.generate_content_stream(
             model=model,
             contents=contents,
             config=generate_content_config,
         ):
+            result += chunk.text
             print(chunk.text, end="")
+        
+        return result
 
     def get_data(self, input: str):
         pass
