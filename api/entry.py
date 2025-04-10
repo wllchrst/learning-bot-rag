@@ -2,7 +2,7 @@ import uvicorn
 import tempfile
 import os
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
-from api.handlers import data_handler
+from api.handlers import data_handler, llm_handler
 
 app = FastAPI()
 
@@ -27,6 +27,14 @@ async def upload_session_ppt(material_code: str = Form(...), file: UploadFile = 
         # Ensure the temporary file is deleted after use
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
+
+@app.post("/ask")
+async def ask_chatbot(question: str):
+    try:
+        response = llm_handler.ask_question(question)
+        return {'response': response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting question from LLM: {str(e)}")
 
 def start_api():
     uvicorn.run(app, host="127.0.0.1", port=8000)
