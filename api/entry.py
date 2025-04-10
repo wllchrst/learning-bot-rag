@@ -2,7 +2,7 @@ import uvicorn
 import tempfile
 import os
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
-from api.handlers import session_ppt_handler
+from api.handlers import data_handler
 
 app = FastAPI()
 
@@ -17,7 +17,7 @@ async def upload_session_ppt(material_code: str = Form(...), file: UploadFile = 
             temp_file.write(await file.read())
             temp_file_path = temp_file.name  # Store path before closing
             
-        session_ppt_handler.handle_session_ppt(material_code, temp_file_path)
+        data_handler.handle_session_ppt(material_code, temp_file_path)
         return {"message": "Success reading file"}
 
     except Exception as e:

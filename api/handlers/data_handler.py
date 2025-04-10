@@ -1,7 +1,7 @@
-from embeddings import embed_session_ppt
-from loaders import load_ppt
+"""Handler file that is focused on receiving data for the application (User Login, Data for material, session and othe things for indexing)"""
+from ai.embeddings import embed_session_ppt
+from ai.loaders import load_ppt
 from database import DatabaseClient
-from database.server import DatabaseServer
 from helpers import EnvHelper
 from dataclasses import asdict
 
