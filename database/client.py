@@ -72,5 +72,33 @@ class DatabaseClient:
         except Exception as e:
             traceback.print_exc()
             print(f'Error listing collection: {e}')
+    
+    def search_entities(self,
+                    database_name: str,
+                    collection_name: str,
+                    field: str,
+                    query_vector: list[float],
+                    output_fields: list[str],
+                    metric_type: str = 'COSINE',
+                    limit: int = 3
+                    ):
+        try:
+            self.client.use_database(database_name)
+            
+            result = self.client.search(
+                collection_name=collection_name,
+                anns_field=field,
+                limit=limit,
+                search_params={
+                    "metric_type": metric_type
+                },
+                data=[query_vector],
+                output_fields=output_fields
+            )
+
+            return result[0]
+        except Exception as e:
+            traceback.print_exc()
+            print(f'Error searching entities: {e}')
 
 DatabaseClient()
