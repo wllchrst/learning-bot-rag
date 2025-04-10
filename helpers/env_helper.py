@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from app_decorator import singleton
 
-ENVS = ["SESSION_PPT_COLUMN", "DATABASE_NAME"]
+ENVS = ["SESSION_PPT_COLUMN", "DATABASE_NAME", "GEMINI_API_KEY"]
 
 @singleton
 class EnvHelper:
@@ -32,5 +32,6 @@ class EnvHelper:
     def assign_env(self):
         self.SESSION_PPT_COLLECTION = self.envs[ENVS[0]]
         self.DATABASE_NAME = self.envs[ENVS[1]]
+        self.GEMINI_API_KEY = self.envs[ENVS[2]]
 
 EnvHelper()
