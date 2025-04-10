@@ -36,6 +36,3 @@ class GeminiModel(ChatModel):
             print(chunk.text, end="")
         
         return result
-
-    def get_data(self, input: str):
-        pass

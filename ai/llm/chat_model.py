@@ -7,7 +7,3 @@ class ChatModel(ABC):
     @abstractmethod
     def answer(self, initial_input: str):
         pass
-
-    @abstractmethod
-    def get_data(self, input: str):
-        pass
