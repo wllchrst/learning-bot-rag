@@ -8,3 +8,5 @@ python-multipart
 unstructured
 python-pptx
 langchain_huggingface 
+python-ulid
+google-genai
