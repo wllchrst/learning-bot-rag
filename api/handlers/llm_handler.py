@@ -3,6 +3,8 @@ from ai.chat import LangchainChat
 
 langchain_chat = LangchainChat()
 
-def ask_question(question: str) -> str:
-    answer = langchain_chat.answer(question)
+def ask_question(question: str, chat_id: str) -> str:
+    if chat_id == '':
+        chat_id = None
+    answer = langchain_chat.answer(question, chat_id)
     return answer
