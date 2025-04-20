@@ -77,7 +77,7 @@ class LangchainChat:
         if chat_history is not None:
             for chat in chat_history:
                 print(f'chat: {chat}')
-                formatted_chat_history += f"User: {chat.question}\nAssistant: {chat.answer}\n\n"
+                formatted_chat_history += f"User: {chat['question']}\nAssistant: {chat['answer']}\n\n"
 
         prompt = f"""
 Please help me answer the question based on the context given on this chat, but you can also add additional information for the answer, and can you please answer the question without mentioning the context given
@@ -139,14 +139,18 @@ question: {state['question']}
         Returns:
             AnswerResponse: Contains the chat ID and generated answer.
         """
-        if chat_id is None:
-            chat_id = ULIDHelper().generate_ulid()
+        try:
+            if chat_id is None:
+                chat_id = ULIDHelper().generate_ulid()
 
-        resp = self.graph.invoke({"question": question, "chat_id": chat_id})
+            resp = self.graph.invoke({"question": question, "chat_id": chat_id})
 
-        self.save_chat(chat_id, question, resp['answer'])
+            self.save_chat(chat_id, question, resp['answer'])
 
-        return AnswerResponse(
-            chat_id=chat_id,
-            answer=resp['answer']
-        )
+            return AnswerResponse(
+                chat_id=chat_id,
+                answer=resp['answer']
+            )
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
