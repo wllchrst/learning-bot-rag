@@ -1,7 +1,7 @@
 fastapi==0.115.12
 langchain==0.3.23
-milvus==2.3.5
-pymilvus==2.5.6
+milvus
+pymilvus
 uvicorn==0.34.0
 langchain-community
 python-multipart
@@ -10,3 +10,5 @@ python-pptx
 langchain_huggingface 
 python-ulid
 google-genai
+googlesearch-python
+beautifulsoup4
