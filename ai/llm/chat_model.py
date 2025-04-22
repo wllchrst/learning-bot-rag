@@ -1,4 +1,3 @@
-import traceback
 from abc import ABC, abstractmethod
 class ChatModel(ABC):
     def __init__(self):

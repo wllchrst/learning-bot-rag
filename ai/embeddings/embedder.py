@@ -29,6 +29,6 @@ def embed_session_ppt(texts: list[str], material_code: str) -> list[SessionPPTDa
         
     return result
 
-def embed_question(text: str) -> list[float]:
+def embed_text(text: str) -> list[float]:
     vectors = hf.embed_documents([text])
     return vectors[0]

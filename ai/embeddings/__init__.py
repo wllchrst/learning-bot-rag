@@ -1,1 +1,1 @@
-from ai.embeddings.embedder import embed_session_ppt, embed_question
+from ai.embeddings.embedder import embed_session_ppt, embed_text

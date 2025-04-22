@@ -6,9 +6,10 @@ from helpers import ULIDHelper
 from models.interfaces.state import State
 from models.interfaces.chat_history import ChatHistory
 from models.data.answer_response import AnswerResponse
-from ai.embeddings import embed_question
+from ai.embeddings import embed_text
 from database import DatabaseClient
 from helpers import EnvHelper
+from ai.agents import WebScraper
 
 class LangchainChat:
     """
@@ -32,6 +33,7 @@ class LangchainChat:
         self.dc = DatabaseClient()
         self.eh = EnvHelper()
         self.gm = GeminiModel()
+        self.web_scraper = WebScraper()
         self.chat_history: Dict[str, list[ChatHistory]] = {}
         self.create_graph()
 
@@ -46,7 +48,7 @@ class LangchainChat:
             dict: Contextual text list and existing chat history for the session.
         """
         question = state['question']
-        vector = embed_question(question)
+        vector = embed_text(question)
 
         res = self.dc.search_entities(
             database_name=self.eh.DATABASE_NAME,
