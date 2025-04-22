@@ -32,16 +32,16 @@ class Agent(ABC):
         answer = self.gemini_model.answer(full_input)
         return answer
     
-    def process_input(self, feedbacks: list[str], role_description: str, question: str):
-        information = ''
+    def process_input(self, information_list: list[str], role_description: str, question: str):
+        full_information = ''
 
-        for feedback in feedbacks:
-            information += f'{feedback}\n\n'
+        for info in information_list:
+            full_information += f'{info}\n\n'
         return f"""
 {role_description}
 
 This is the information that have been gathered: 
-{information}
+{full_information}
 
 This is the question: 
 {question}
