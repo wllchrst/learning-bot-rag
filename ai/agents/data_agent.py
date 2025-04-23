@@ -31,4 +31,4 @@ class DataAgent(Agent):
             question=question
         )
 
-        print(final_input)
+        return self.generate_answer(final_input)
