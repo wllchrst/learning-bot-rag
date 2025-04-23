@@ -6,10 +6,9 @@ from helpers import ULIDHelper
 from models.interfaces.state import State
 from models.interfaces.chat_history import ChatHistory
 from models.data.answer_response import AnswerResponse
-from ai.embeddings import embed_text
 from database import DatabaseClient
 from helpers import EnvHelper
-from ai.agents import WebScraper
+from ai.agents import WebScraper, DataAgent
 
 class LangchainChat:
     """
@@ -34,6 +33,7 @@ class LangchainChat:
         self.eh = EnvHelper()
         self.gm = GeminiModel()
         self.web_scraper = WebScraper()
+        self.data_agent = DataAgent()
         self.chat_history: Dict[str, list[ChatHistory]] = {}
         self.create_graph()
 
@@ -47,20 +47,13 @@ class LangchainChat:
         Returns:
             dict: Contextual text list and existing chat history for the session.
         """
-        question = state['question']
-        vector = embed_text(question)
+        web_feedback = self.web_scraper.get_feedback(state)
+        data_feedback = self.data_agent.get_feedback(state)
+        context = [web_feedback, data_feedback]
 
-        res = self.dc.search_entities(
-            database_name=self.eh.DATABASE_NAME,
-            collection_name=self.eh.SESSION_PPT_COLLECTION,
-            field="vector",
-            query_vector=vector,
-            output_fields=['text', 'material_code']
-        )
         chat_history = None if state['chat_id'] not in self.chat_history\
             else self.chat_history[state['chat_id']]
 
-        context: list[str] = [r['entity']['text'] for r in res]
         return {'context': context, 'chat_history': chat_history}
 
     def generate(self, state: State):
