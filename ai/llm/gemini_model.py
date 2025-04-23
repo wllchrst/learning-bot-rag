@@ -9,7 +9,6 @@ class GeminiModel(ChatModel):
         self.client = genai.Client(api_key=self.API_KEY)
 
     def answer(self, prompt: str):
-        print(f'prompt: {prompt}')
         model = "gemini-2.0-flash-lite"
         contents = [
             types.Content(
@@ -33,6 +32,6 @@ class GeminiModel(ChatModel):
             config=generate_content_config,
         ):
             result += chunk.text
-            print(chunk.text, end="")
+            # print(chunk.text, end="")
         
         return result
