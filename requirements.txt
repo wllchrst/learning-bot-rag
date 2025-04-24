@@ -12,3 +12,4 @@ python-ulid
 google-genai
 googlesearch-python
 beautifulsoup4
+streamlit
