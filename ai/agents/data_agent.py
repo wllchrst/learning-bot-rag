@@ -15,7 +15,7 @@ class DataAgent(Agent):
         question = initial_input['question']
         question_vector = embed_text(question)
 
-        search_result = self.database_client.search_entities(
+        search_results = self.database_client.search_entities(
             database_name=self.env_helper.DATABASE_NAME,
             collection_name=self.env_helper.SESSION_PPT_COLLECTION,
             field="vector",
@@ -23,7 +23,13 @@ class DataAgent(Agent):
             output_fields=['text', 'material_code']
         )
 
-        information_list = [data['entity']['text'] for data in search_result]
+        search_results = self.validate_information_relevance(search_results)
+
+        if(len(search_results) == 0) :
+            print("There is no enough relevant document in vector database")
+            return ''
+        
+        information_list = [data['entity']['text'] for data in search_results]
 
         final_input = self.process_input(
             information_list=information_list,
@@ -32,3 +38,14 @@ class DataAgent(Agent):
         )
 
         return self.generate_answer(final_input)
+
+    def validate_information_relevance(self, search_results: list[dict], distance_treshold=0.3):
+        filtered_results = []
+        
+        for result in search_results:
+            distance = result['distance']
+            if distance < distance_treshold:
+                continue
+            filtered_results.append(result)
+        
+        return filtered_results
