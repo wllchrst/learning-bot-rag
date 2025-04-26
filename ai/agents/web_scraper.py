@@ -10,7 +10,7 @@ class WebScraper(Agent):
         self.role = "You are an agent that is going to use information gathered from all over the internet and help answer the question"
         
     def get_feedback(self, initial_input: State) -> str:
-        question = initial_input['question']
+        question = self.conclude_question_by_chat_history(initial_input)
         links = self.google_search_links(question)
         
         url_data = []

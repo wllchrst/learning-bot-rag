@@ -12,7 +12,7 @@ class DataAgent(Agent):
         self.role_desc = 'You are an agent that is going to receive information from material that is factual and came from University Lectures, Material Session data and other factual information'
     
     def get_feedback(self, initial_input: State) -> str:
-        question = initial_input['question']
+        question = self.conclude_question_by_chat_history(initial_input)
         question_vector = embed_text(question)
 
         search_results = self.database_client.search_entities(
