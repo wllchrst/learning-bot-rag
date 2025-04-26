@@ -4,6 +4,7 @@ from models.interfaces.state import State
 from models.interfaces.url_data import UrlData
 from ai.embeddings import embed_text
 from ai.llm import GeminiModel
+from models.interfaces.chat_history import ChatHistory
 class Agent(ABC):
     def __init__(self):
         super().__init__()
@@ -32,6 +33,29 @@ class Agent(ABC):
         answer = self.gemini_model.answer(full_input)
         return answer
     
+    def conclude_question_by_chat_history(self, state: State):
+        if state['chat_history'] == None or len(state['chat_history']) == 0:
+            return state['question']
+
+        questions = [history['question'] for history in state['chat_history']]
+        formatted_history = 'Chat History:\n'
+        
+        for q in questions:
+            formatted_history += f'- {q}\n'
+        
+        formatted_history += f'\nUser Last Question: {state['question']}'
+
+        prompt = f'''
+Can you help me conclude the question based on the context of chat history, just give me the end result
+
+{formatted_history}
+        '''
+
+        answer = self.gemini_model\
+            .answer(prompt)
+        
+        return answer
+
     def process_input(self, information_list: list[str], role_description: str, question: str):
         full_information = ''
 
