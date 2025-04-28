@@ -13,3 +13,4 @@ google-genai
 googlesearch-python
 beautifulsoup4
 streamlit
+better_profanity
