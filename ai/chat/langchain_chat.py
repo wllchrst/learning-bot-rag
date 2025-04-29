@@ -9,6 +9,7 @@ from models.data.answer_response import AnswerResponse
 from database import DatabaseClient
 from helpers import EnvHelper
 from ai.agents import WebScraper, DataAgent
+from ai.agents.agent import Agent
 
 class LangchainChat:
     """
@@ -47,8 +48,11 @@ class LangchainChat:
         Returns:
             dict: Contextual text list and existing chat history for the session.
         """
-        web_feedback = self.web_scraper.get_feedback(state)
-        data_feedback = self.data_agent.get_feedback(state)
+        concluded_question = self.web_scraper.conclude_question_by_chat_history(state)
+        print(f'concluded question: {concluded_question}')
+
+        web_feedback = self.web_scraper.get_feedback(concluded_question)
+        data_feedback = self.data_agent.get_feedback(concluded_question)
         context = [web_feedback, data_feedback]
 
         chat_history = None if state['chat_id'] not in self.chat_history\
@@ -115,7 +119,6 @@ question: {state['question']}
                 self.chat_history[chat_id] = []
 
             self.chat_history[chat_id].append(chat)
-
             return True
         except Exception as e:
             traceback.print_exc()
@@ -138,7 +141,8 @@ question: {state['question']}
             if chat_id is None:
                 chat_id = ULIDHelper().generate_ulid()
 
-            resp = self.graph.invoke({"question": question, "chat_id": chat_id})
+            histories = self.chat_history.get(chat_id, [])
+            resp = self.graph.invoke({"question": question, "chat_id": chat_id, "chat_history": histories})
 
             self.save_chat(chat_id, question, resp['answer'])
 
@@ -149,3 +153,4 @@ question: {state['question']}
         except Exception as e:
             print(e)
             traceback.print_exc()
+            raise

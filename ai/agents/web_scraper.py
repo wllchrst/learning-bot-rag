@@ -1,4 +1,5 @@
 import requests
+import traceback
 from googlesearch import search
 from bs4 import BeautifulSoup
 from ai.agents.agent import Agent
@@ -9,12 +10,14 @@ class WebScraper(Agent):
         super().__init__()
         self.role = "You are an agent that is going to use information gathered from all over the internet and help answer the question"
         
-    def get_feedback(self, initial_input: State) -> str:
-        question = self.conclude_question_by_chat_history(initial_input)
+    def get_feedback(self, question: str) -> str:
         links = self.google_search_links(question)
         
         url_data = []
         for link in links:
+            if not link or not link.startswith(('http://', 'https://')):
+                print(f'Skipping invalid link: {link}')
+                continue
             data = self.parse_url(link)
             url_data.extend(data)
 
@@ -34,9 +37,13 @@ class WebScraper(Agent):
         return links
     
     def parse_url(self, url: str):
-        print(f'url: {url}')
-        page = requests.get(url)
-        soup = BeautifulSoup(page.content, 'html.parser')
+        try:
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content, 'html.parser')
 
-        chunks = load_text_from_web(soup.get_text())
-        return chunks
+            chunks = load_text_from_web(soup.get_text())
+            return chunks
+        except Exception as e:
+            print(f'Error parsing URL {url}: {e}')
+            traceback.print_exc()
+            raise

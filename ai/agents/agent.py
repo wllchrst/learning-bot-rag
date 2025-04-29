@@ -11,7 +11,7 @@ class Agent(ABC):
         self.gemini_model = GeminiModel()
     
     @abstractmethod
-    def get_feedback(self, initial_input: State) -> str:
+    def get_feedback(self, question: str) -> str:
         pass
 
     def feedback(self, input: str, url_data_list: list[UrlData], top_k=5) -> list[str]:
@@ -34,6 +34,8 @@ class Agent(ABC):
         return answer
     
     def conclude_question_by_chat_history(self, state: State):
+        if 'chat_history' not in state:
+            return state['question']
         if state['chat_history'] == None or len(state['chat_history']) == 0:
             return state['question']
 
@@ -50,6 +52,8 @@ Can you help me conclude the question based on the context of chat history, just
 
 {formatted_history}
         '''
+
+        print(f'Promopt CONCLUDE: {prompt}')
 
         answer = self.gemini_model\
             .answer(prompt)
