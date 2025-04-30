@@ -70,4 +70,4 @@ async def ask_chatbot(question: str, chat_id: str):
         return format_response(data=None, message=f"Error getting question from LLM: {str(e)}", success=False, status_code=500)
 
 def start_api():
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

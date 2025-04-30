@@ -2,21 +2,33 @@ import traceback
 from pymilvus import MilvusClient, utility, connections
 from pymilvus.exceptions import MilvusException
 from app_decorator import singleton
+LOCAL_DEVELOPMENT = True # false if running application using docker
 @singleton
 class DatabaseClient:
-    def __init__(self, uri='http://localhost:19530'):
-        self.uri = uri
+    def __init__(self, host="standalone", port=19530):
+        self.host = host
+        self.port = port
+        print(f"Connecting to Milvus at {self.host}:{self.port}")
         self.connect()
 
     def connect(self):
         try:
-            connections.connect(alias="default", uri=self.uri, token="root:Milvus")
-            self.client = MilvusClient(uri=self.uri, token="root:Milvus")
+            # Use host and port for legacy connection API
+            connections.connect(
+                alias="default", host=self.host, port=self.port, token="root:Milvus"
+            )
 
-            print(f'Connected to database with version: {utility.get_server_version()}')
+            # For MilvusClient, use proper URI format with tcp://
+            uri = f"tcp://{self.host}:{self.port}"
+            if LOCAL_DEVELOPMENT:
+                uri = 'http://localhost:19530'
+            print('Connecting to Milvus with URI:', uri)
+            self.client = MilvusClient(uri=uri, token="root:Milvus")
+
+            print(f"Connected to Milvus, version: {utility.get_server_version()}")
         except Exception as e:
             traceback.print_exc()
-            print(f'Connecting to database server error: {e}')
+            print(f"Connecting to Milvus error: {e}")
             
     def insert_entity(self, database_name: str, collection_name: str, data: list[dict]):
         try:
