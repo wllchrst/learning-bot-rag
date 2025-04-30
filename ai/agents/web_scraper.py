@@ -12,6 +12,9 @@ class WebScraper(Agent):
         
     def get_feedback(self, question: str) -> str:
         links = self.google_search_links(question)
+        if len(links) == 0:
+            print('No links found')
+            return ''
         
         url_data = []
         for link in links:
@@ -28,13 +31,18 @@ class WebScraper(Agent):
         return final_answer
 
     def google_search_links(self, question: str, number_of_result=2):
-        links = []
-        for link in search(question, num_results=number_of_result):
-            if link == '':
-                continue
-            links.append(link)
+        try:
+            links = []
+            for link in search(question, num_results=number_of_result):
+                if link == '':
+                    continue
+                links.append(link)
 
-        return links
+            return links
+        except Exception as e:
+            print(f'Error searching Google: {e}')
+            traceback.print_exc()
+            return []
     
     def parse_url(self, url: str):
         try:
