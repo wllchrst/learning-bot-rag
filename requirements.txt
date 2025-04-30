@@ -14,3 +14,5 @@ googlesearch-python
 beautifulsoup4
 streamlit
 better_profanity
+langgraph
+hf_xet
